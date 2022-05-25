@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/iaw-2022/ManuelEnriquezMerino-api#readme",
   "dependencies": {
-    "express": "^4.18.1"
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "pg": "^8.7.3"
   }
 }
