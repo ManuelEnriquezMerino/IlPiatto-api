@@ -1,8 +1,8 @@
 const express =require('express')
 const app = express()
 
-//routes
-const routes = require('./routes/index.routes')
+//routes //VER ESTO
+const routes = require('./routes/plato.routes')
 
 app.use(routes)
 
