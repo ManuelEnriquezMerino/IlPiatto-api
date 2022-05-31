@@ -3,7 +3,7 @@ const { Pool } = require('pg/lib')
 const pool = require('../database')
 
 controller.getPlato = async(req,res) => {
-    const respuesta = await pool.query('SELECT * FROM platos;')
+    const respuesta = await pool.query('SELECT id,nombre,descripcion, precio FROM platos;') //Enviar fecha de creacion y actualizacion??
     if(respuesta.rows.length > 0){
         res.status(200).json(respuesta.rows);
     } else {
