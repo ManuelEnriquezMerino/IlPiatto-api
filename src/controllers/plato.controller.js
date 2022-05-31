@@ -15,7 +15,7 @@ controller.getPlatoID = async(req,res) => {
     const id = req.params.id;
 
     if(!isNaN(id)){
-        const respuesta = await pool.query('SELECT * FROM platos WHERE id=$1', [id])
+        const respuesta = await pool.query('SELECT * FROM platos WHERE id=$1;', [id])
         if(respuesta.rows.length > 0){
             res.status(200).json(respuesta.rows);
         } else {

@@ -1,10 +1,15 @@
-const express =require('express')
+const express = require('express')
+
+//routes
+const routesPedido = require('./routes/pedido.routes')
+const routesPlato = require('./routes/plato.routes')
+const routesUsuario = require('./routes/usuario.routes')
+ 
 const app = express()
 
-//routes //VER ESTO
-const routes = require('./routes/plato.routes')
-
-app.use(routes)
+app.use('/pedido',routesPedido)
+app.use('/plato',routesPlato)
+app.use('/usuario',routesUsuario)
 
 app.listen(3000, ()=>{
     console.log('Servidor a la espera de conexiones')

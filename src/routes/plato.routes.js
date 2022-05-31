@@ -3,9 +3,9 @@ const router = express.Router()
 const PlatoController = require('../controllers/plato.controller')
 
 //Prueba
-router.get('/plato',PlatoController.getPlato)
-router.get('/plato/:id',PlatoController.getPlatoID)
-router.get('/plato/categoria/:idCategoria',PlatoController.getPlatoCategoria)
-router.get('/plato/restriccion/:idRestriccion',PlatoController.getPlatoRestriccion)
+router.get('/',PlatoController.getPlato)
+router.get('/:id',PlatoController.getPlatoID)
+router.get('/categoria/:idCategoria',PlatoController.getPlatoCategoria)
+router.get('/restriccion/:idRestriccion',PlatoController.getPlatoRestriccion)
 
 module.exports = router
