@@ -1,11 +1,12 @@
 const controller = {}
 const { Pool } = require('pg/lib')
 const pool = require('../database')
+const atributos = '*' //Ver que atributos traer
 
 controller.getPedido = async(req,res) => {
     const correo = req.auth.payload['https://ilpiatto.com/email']
     const idUsuario = await pool.query('SELECT id FROM usuarios WHERE correo=$1;', [correo]) //Migracion no creada?
-    const respuesta = await pool.query('SELECT * FROM pedidos WHERE cliente_id;') //Falta cliente_id en la tabla de pedidos
+    const respuesta = await pool.query(`SELECT ${atributos} FROM pedidos WHERE cliente_id;`) //Falta cliente_id en la tabla de pedidos
     if(respuesta.rows.length > 0){
         res.status(200).json(respuesta.rows);
     } else {

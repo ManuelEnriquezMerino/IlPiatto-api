@@ -1,9 +1,10 @@
 const controller = {}
 const { Pool } = require('pg/lib')
 const pool = require('../database')
+const atributos = 'id,nombre,descripcion,precio'
 
 controller.getPlato = async(req,res) => {
-    const respuesta = await pool.query('SELECT id,nombre,descripcion, precio FROM platos;') //Enviar fecha de creacion y actualizacion??
+    const respuesta = await pool.query(`SELECT ${atributos} FROM platos;`) //Enviar fecha de creacion y actualizacion??
     if(respuesta.rows.length > 0){
         res.status(200).json(respuesta.rows);
     } else {
@@ -15,7 +16,7 @@ controller.getPlatoID = async(req,res) => {
     const id = req.params.id;
 
     if(!isNaN(id)){
-        const respuesta = await pool.query('SELECT * FROM platos WHERE id=$1;', [id])
+        const respuesta = await pool.query(`SELECT ${atributos} FROM platos WHERE id=${id};`)
         if(respuesta.rows.length > 0){
             res.status(200).json(respuesta.rows);
         } else {
@@ -30,7 +31,7 @@ controller.getPlatoCategoria = async(req,res) => {
     const idCategoria = req.params.idCategoria;
 
     if(!isNaN(idCategoria)){
-        const respuesta = await pool.query('SELECT * FROM platos WHERE id in (SELECT plato_id FROM categoria_plato where categoria_id=$1)', [idCategoria])
+        const respuesta = await pool.query(`SELECT ${atributos} FROM platos WHERE id in (SELECT plato_id FROM categoria_plato where categoria_id=${idCategoria})`)
         if(respuesta.rows.length > 0){
             res.status(200).json(respuesta.rows);
         } else {
@@ -45,7 +46,7 @@ controller.getPlatoRestriccion = async(req,res) => {
     const idRestriccion = req.params.idRestriccion;
 
     if(!isNaN(idRestriccion)){
-        const respuesta = await pool.query('SELECT * FROM platos WHERE id in (SELECT plato_id FROM plato_restriccion where restriccion_id=$1)', [idRestriccion])
+        const respuesta = await pool.query(`SELECT ${atributos} FROM platos WHERE id in (SELECT plato_id FROM plato_restriccion where restriccion_id=${idRestriccion})`)
         if(respuesta.rows.length > 0){
             res.status(200).json(respuesta.rows);
         } else {
