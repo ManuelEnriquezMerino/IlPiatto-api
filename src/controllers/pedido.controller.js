@@ -18,7 +18,7 @@ controller.getPedido = async(req,res) => {
         if(respuesta.rows.length > 0){
             res.status(200).json(respuesta.rows);
         } else {
-            res.status(500).json({error: 'El usuario no cuenta con pedidos'})
+            res.status(404).json({error: 'El usuario no cuenta con pedidos'})
         }
     } catch(error) {
         res.status(error[0]).json({error: error[1]})
@@ -166,7 +166,7 @@ controller.postPedido = async(req,res) => {
         const resultadoInsertOpcionalPedidoPlato = await pool.query(insertarOpcionalPedidoPlato)
 
         if(resultadoInsertPedido.rows.length > 0)
-            res.status(201).json({message: `Nuevo pedido generado correctamente con id ${idPedido}`})
+            res.status(201).json({id: idPedido})
         else
             res.status(409).json({error: "Error al almacenar el nuevo pedido junto con sus platos y opcionales"})
 
