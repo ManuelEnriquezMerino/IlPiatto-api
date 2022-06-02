@@ -27,6 +27,72 @@ const PlatoController = require('../controllers/plato.controller')
 *            example: 1500
 */
 
+/**
+*  @swagger
+*   components:
+*     schemas:
+*       Categoria:
+*         type: object
+*         properties:
+*          id:
+*            type: int
+*            description: ID auto generado para la categoria.
+*            example: 1
+*          nombre:
+*            type: string
+*            description: Nombre de la categoria.
+*            example: Pastas
+*          descripcion:
+*            type: string
+*            description: Descripcion de la categoria.
+*            example: Platos basados en Pastas
+*/
+
+/**
+*  @swagger
+*   components:
+*     schemas:
+*       Restriccion:
+*         type: object
+*         properties:
+*          id:
+*            type: int
+*            description: ID auto generado para la restriccion.
+*            example: 1
+*          nombre:
+*            type: string
+*            description: Nombre de la restriccion.
+*            example: Celiaco
+*          descripcion:
+*            type: string
+*            description: Descripcion de la restriccion.
+*            example: Platos que solo contienen alimentos sin TACC
+*/
+
+/**
+*  @swagger
+*   components:
+*     schemas:
+*       Opcional:
+*         type: object
+*         properties:
+*          id:
+*            type: int
+*            description: ID auto generado para el usuario.
+*            example: 1
+*          nombre:
+*            type: string
+*            description: Nombre del plato.
+*            example: Tallarines con salsa bolognesa
+*          descripcion:
+*            type: string
+*            description: Descripcion del plato.
+*            example: Tallarines hechos a mano con salsa bolognesa a base de ingredientes organicos
+*          precio:
+*            type: int
+*            description: Precio del plato.
+*            example: 1500
+*/
 
 /**
 *  @swagger
@@ -67,17 +133,7 @@ router.get('/',PlatoController.getPlato)
 *                   content:
 *                       application/json:
 *                           schema:
-*                                 type: object
-*                                 properties:
-*                                   id:
-*                                       type: int
-*                                       example: 1
-*                                   nombre:
-*                                       type: string
-*                                       example: Pastas
-*                                   descripcion:
-*                                       type: string
-*                                       example:  Platos basados en Pastas
+*                                 $ref: '#/components/schemas/Categoria'
 *               "404":
 *                   description: No hay categorias disponibles
 *               "500":
@@ -97,23 +153,33 @@ router.get('/categoria',PlatoController.getCategorias)
 *                   content:
 *                       application/json:
 *                           schema:
-*                                 type: object
-*                                 properties:
-*                                   id:
-*                                       type: int
-*                                       example: 1
-*                                   nombre:
-*                                       type: string
-*                                       example: Celiaco
-*                                   descripcion:
-*                                       type: string
-*                                       example: Platos que solo contienen alimentos sin TACC
+*                                 $ref: '#/components/schemas/Restriccion'
 *               "404":
 *                   description: No hay restricciones disponibles
 *               "500":
 *                   description: Error en el servidor
 */
 router.get('/restriccion',PlatoController.getRestricciones)
+
+/**
+*   @swagger
+*   /plato/opcional/:
+*       get:
+*           summary: Obtiene un listado de todos los opcionales.
+*           tags: [Plato]
+*           responses:
+*               "200":
+*                   description: Listado de opcionales.
+*                   content:
+*                       application/json:
+*                           schema:
+*                               $ref: '#/components/schemas/Opcional'
+*               "404":
+*                   description: No hay opcionales disponibles
+*               "500":
+*                   description: Error en el servidor
+*/
+router.get('/opcional',PlatoController.getOpcionales)
 
 /**
 *   @swagger
@@ -159,7 +225,7 @@ router.get('/:id',PlatoController.getPlatoID)
 *                   description: Id de la categoria
 *           responses:
 *               "200":
-*                   description: Listado de platos.
+*                   description: Listado de platos que pertenecen a la categoria.
 *                   content:
 *                       application/json:
 *                           schema:
@@ -188,7 +254,7 @@ router.get('/categoria/:idCategoria',PlatoController.getPlatoCategoria)
 *                   description: Id de la restriccion
 *           responses:
 *               "200":
-*                   description: Listado de platos.
+*                   description: Listado de platos que siguen la restriccion.
 *                   content:
 *                       application/json:
 *                           schema:
@@ -201,5 +267,34 @@ router.get('/categoria/:idCategoria',PlatoController.getPlatoCategoria)
 *                   description: Error en el servidor
 */
 router.get('/restriccion/:idRestriccion',PlatoController.getPlatoRestriccion)
+
+/**
+*   @swagger
+*   /plato/opcional/{id}:
+*       get:
+*           summary: Obtiene un listado de los opcionales para un platos.
+*           tags: [Plato]
+*           parameters:
+*             - in: path
+*               name: id
+*               schema:
+*                   type: integer
+*                   required: true
+*                   description: Id del plato
+*           responses:
+*               "200":
+*                   description: Listado de platos que pertenecen a la categoria.
+*                   content:
+*                       application/json:
+*                           schema:
+*                               $ref: '#/components/schemas/Plato'
+*               "400":
+*                   description: El plato debe ser ingresado como un entero.
+*               "404":
+*                   description: No hay opcionales disponibles. 
+*               "500":
+*                   description: Error en el servidor
+*/
+router.get('/opcional/:idPlato',PlatoController.getOpcionalesPlato)
 
 module.exports = router

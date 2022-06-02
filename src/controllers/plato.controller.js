@@ -91,5 +91,34 @@ controller.getRestricciones = async(req,res) => {
     }
 }
 
+controller.getOpcionales = async(req,res) => {
+    try{
+        const respuesta = await pool.query(`SELECT id,plato_id,nombre,descripcion,precio FROM opcionales;`)
+        if(respuesta.rows.length > 0){
+            res.status(200).json(respuesta.rows);
+        } else {
+            res.status(404).json({error: 'No hay opcionales disponibles'})
+        }
+    } catch (err) {
+        res.status(500).json({error: 'Error en el servidor'})
+    }
+}
+
+controller.getOpcionalesPlato = async(req,res) => {
+    try{
+        const idPlato = req.params.idPlato;
+
+        if(!isNaN(idPlato)){
+            const respuesta = await pool.query(`SELECT id,nombre,descripcion,precio FROM opcionales WHERE plato_id=${idPlato};`)
+            if(respuesta.rows.length > 0)
+                res.status(200).json(respuesta.rows);
+            else
+                res.status(404).json({error: 'El plato ingresado no tiene opcionales'})
+        } else
+            res.status(400).json({error: 'El plato debe ser ingresado como un entero'})  
+    } catch (err) {
+        res.status(500).json({error: 'Error en el servidor'})
+    }
+}
 
 module.exports = controller
