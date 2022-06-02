@@ -72,12 +72,27 @@ const jsonParser = bodyParser.json()
 *                   description: Error al solicitar datos de usuario
 */
 router.get('/',checkJwt,UsuarioController.getUsuario,function(err, req, res, next) {
-    if(err.name=="InvalidTokenError")
+    if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
         res.status(400).send({error:"Error de autenticacion"});
     else
-        res.status(500).send({error:"Error al recibir pedido"});
+        res.status(500).send({error:"Error al crear usuario"});
 })
 
-router.post('/',jsonParser,UsuarioController.postUsuario)
+router.post('/',jsonParser,UsuarioController.postUsuario,function(err, req, res, next) {
+    if(err.name=="SyntaxError")
+        res.status(400).send({error:"JSON invalido"});
+    else
+        res.status(500).send({error:"Error al crear usuario"});
+})
+
+router.put('/:id',checkJwt,jsonParser,UsuarioController.putUsuario,function(err, req, res, next) {
+    if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
+        res.status(400).send({error:"Error de autenticacion"});
+    else
+        if(err.name=="SyntaxError")
+            res.status(400).send({error:"JSON invalido"});
+        else
+            res.status(500).send({error:"Error al recibir pedido"});
+})
 
 module.exports = router
