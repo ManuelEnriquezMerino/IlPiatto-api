@@ -11,7 +11,7 @@ async function obtenerIDUsuario(email){
        throw [404,"Error al obtener datos del usuario"]
 }
 
-controller.getPedido = async(req,res) => {
+controller.getPedidos = async(req,res) => {
     try {
         const idUsuario = await obtenerIDUsuario(req.auth.payload['https://ilpiatto.com/email'])
         const respuesta = await pool.query(`SELECT ${atributos} FROM pedidos WHERE cliente_id=${idUsuario};`)
@@ -20,6 +20,34 @@ controller.getPedido = async(req,res) => {
         } else {
             res.status(404).json({error: 'El usuario no cuenta con pedidos'})
         }
+    } catch(error) {
+        res.status(error[0]).json({error: error[1]})
+    }
+}
+
+controller.getPedidoID = async(req,res) => {
+    try {
+        const idPedido = req.params.id
+        console.log(idPedido)
+        const pedido = await pool.query(`SELECT id,fecha,direccion,precio,cliente_id FROM pedidos WHERE id=${idPedido};`)
+        if(pedido.rows.length == 0)
+            res.status(404).json({error: 'El pedido no existe'})
+
+        const idUsuario = await obtenerIDUsuario(req.auth.payload['https://ilpiatto.com/email'])
+        
+        if(pedido.rows[0].cliente_id!=idUsuario)
+            res.status(401).json({error: 'No esta autorizado para ver este pedido'})
+
+        const informacionPedido = await pool.query(`SELECT id,opcional_id,pedido_id,plato_id,n_orden FROM opcional_pedido_plato WHERE pedido_id=${idPedido};`)
+        if(informacionPedido.rows.length > 0)
+            res.status(200).json({
+                                    "fecha": pedido.rows[0].fecha,
+                                    "direccion": pedido.rows[0].direccion,
+                                    "precio": pedido.rows[0].precio,
+                                    "platos":informacionPedido.rows
+                                })
+        else
+            res.status(500).json({error: 'No se pudo obtener los datos del pedido'})
     } catch(error) {
         res.status(error[0]).json({error: error[1]})
     }
@@ -77,7 +105,6 @@ async function validarNuevoPedido(body){
     } else
         throw [500,"Error al validar opcionales"]
 }
-
 
 function generarInsertOpcionalPedidoPlato(body){
     var insertarPedido = 'INSERT INTO opcional_pedido_plato (plato_id, opcional_id, pedido_id, n_orden) values '
@@ -176,8 +203,5 @@ controller.postPedido = async(req,res) => {
         res.status(error[0]).json({error: error[1]})
     }
 }
-
-
-
 
 module.exports = controller

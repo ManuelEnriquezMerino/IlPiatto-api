@@ -64,7 +64,12 @@ const jsonParser = bodyParser.json()
 *               "404":
 *                   description: El usuario no cuenta con pedidos
 */
-router.get('/',checkJwt,PedidoController.getPedido,function(err, req, res, next) {
+router.get('/',checkJwt,PedidoController.getPedidos,function(err, req, res, next) {
+    if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
+        res.status(400).send({error:"Error de autenticacion"})
+})
+
+router.get('/:id',checkJwt,PedidoController.getPedidoID,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
         res.status(400).send({error:"Error de autenticacion"})
 })
