@@ -28,7 +28,6 @@ controller.getPedidos = async(req,res) => {
 controller.getPedidoID = async(req,res) => {
     try {
         const idPedido = req.params.id
-        console.log(idPedido)
         const pedido = await pool.query(`SELECT id,fecha,direccion,precio,cliente_id FROM pedidos WHERE id=${idPedido};`)
         if(pedido.rows.length == 0)
             res.status(404).json({error: 'El pedido no existe'})

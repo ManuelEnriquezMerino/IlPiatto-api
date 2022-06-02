@@ -69,6 +69,65 @@ router.get('/',checkJwt,PedidoController.getPedidos,function(err, req, res, next
         res.status(400).send({error:"Error de autenticacion"})
 })
 
+/**
+*   @swagger
+*   /pedido/{id}:
+*       get:
+*           summary: Obtener los datos de un dado pedidos.
+*           tags: [Pedido]
+*           parameters:
+*             - in: path
+*               name: id
+*               schema:
+*                   type: integer
+*                   required: true
+*                   description: Id del pedido
+*           security:
+*               - bearerAuth: [] 
+*           responses:
+*               "200":
+*                   description: Datos del pedido.
+*                   content:
+*                       application/json:
+*                           schema:
+*                               type: object
+*                               properties:
+*                                 fecha:
+*                                     type: date
+*                                     example: 2022-06-02 18:14:15
+*                                 direccion:
+*                                     type: string
+*                                     example: Urquiza 154
+*                                 precio:
+*                                     type: int
+*                                     example:  5450
+*                                 platos:
+*                                     type: object
+*                                     properties:
+*                                       id:
+*                                           type: int
+*                                           example:  1
+*                                       opcional_id:
+*                                           type: int
+*                                           example:  1
+*                                       pedido_id:
+*                                           type: int
+*                                           example:  1
+*                                       plato_id:
+*                                           type: int
+*                                           example:  1
+*                                       n_orden:
+*                                           type: int
+*                                           example:  1
+*               "400":
+*                   description: Error de autenticacion.
+*               "401":
+*                   description: No esta autorizado para ver este pedido.
+*               "404":
+*                   description: El pedido no existe
+*               "500":
+*                   description: No se pudo obtener los datos del pedido
+*/
 router.get('/:id',checkJwt,PedidoController.getPedidoID,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
         res.status(400).send({error:"Error de autenticacion"})
