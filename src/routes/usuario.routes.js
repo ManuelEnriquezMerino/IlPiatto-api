@@ -78,6 +78,40 @@ router.get('/',checkJwt,UsuarioController.getUsuario,function(err, req, res, nex
         res.status(500).send({error:"Error al crear usuario"});
 })
 
+/**
+*   @swagger
+*   /usuario/:
+*       post:
+*           summary: Crea un nuevo usuario.
+*           tags: [Usuario]
+*           requestBody:
+*               required: true
+*               content:
+*                   application/json:
+*                       schema:
+*                           type: object
+*                           properties:
+*                               usuario:
+*                                   type: string
+*                                   example: manuelem
+*                               email:
+*                                   type: string
+*                                   example: manuel_em7@hotmail.com
+*           responses:
+*               "201":
+*                   description: Se cargo exitosamente el usuario, se retorna su ID.
+*                   content:
+*                       application/json:
+*                           schema:
+*                              properties:
+*                               id:
+*                                   type: integer
+*                                   example: 1
+*               "400":
+*                   description: <ul><li>JSON invalido.</li><li>Error en la cantidad de parametros enviados.</li><li>La primer clave debe ser usuario</li><li>La segunda clave debe ser email.</li><li>El usuario debe ser una cadena de caracteres</li><li>El email debe ser una cadena de caracteres.</li><li>Los datos del usuario ingresado ya existen</li></ul>
+*               "500":
+*                   description: <ul><li>Error al crear usuario.</li></ul>
+*/
 router.post('/',jsonParser,UsuarioController.postUsuario,function(err, req, res, next) {
     if(err.name=="SyntaxError")
         res.status(400).send({error:"JSON invalido"});
@@ -85,6 +119,44 @@ router.post('/',jsonParser,UsuarioController.postUsuario,function(err, req, res,
         res.status(500).send({error:"Error al crear usuario"});
 })
 
+/**
+*   @swagger
+*   /usuario/{id}:
+*       put:
+*           summary: Modificar informacion de un usuario.
+*           tags: [Usuario]
+*           parameters:
+*             - in: path
+*               name: id
+*           requestBody:
+*               required: true
+*               content:
+*                   application/json:
+*                       schema:
+*                           type: object
+*                           properties:
+*                             nombre:
+*                                 type: string
+*                                 example: Manuel
+*                             apellido:
+*                                 type: string
+*                                 example: Enriquez
+*                             nacimiento:
+*                                 type: string
+*                                 example: 1998-7-5
+*                             direccion:
+*                                 type: string
+*                                 example: urquiza 154
+*           security:
+*               - bearerAuth: [] 
+*           responses:
+*               "204":
+*                   description: Se modifico exitosamente el usuario.
+*               "400":
+*                   description: <ul><li>Error en la cantidad de parametros enviados.</li><li>La primer clave debe ser nombre.</li><li>La segunda clave debe ser apellido.</li><li>La tercera clave debe ser nacimiento.</li><li>La cuarta clave debe ser direccion.</li><li>El nombre debe ser nulo o una cadena de caracteres.</li><li>El apellido debe ser nulo o una cadena de caracteres.</li><li>El nacimiento debe ser nulo o una fecha.</li><li>El direccion debe ser nula o una cadena de caracteres.</li></ul>
+*               "500":
+*                   description: <ul><li>Error al modificar usuario.</li></ul>
+*/
 router.put('/:id',checkJwt,jsonParser,UsuarioController.putUsuario,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
         res.status(400).send({error:"Error de autenticacion"});
@@ -92,7 +164,7 @@ router.put('/:id',checkJwt,jsonParser,UsuarioController.putUsuario,function(err,
         if(err.name=="SyntaxError")
             res.status(400).send({error:"JSON invalido"});
         else
-            res.status(500).send({error:"Error al recibir pedido"});
+            res.status(500).send({error:"Error al modificar usuario"});
 })
 
 module.exports = router

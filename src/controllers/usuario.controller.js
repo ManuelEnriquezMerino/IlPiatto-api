@@ -46,7 +46,7 @@ controller.postUsuario = async(req,res) => {
 
         const respuesta = await pool.query(`INSERT INTO clientes (usuario,email,created_at,updated_at) VALUES ('${body.usuario}','${body.email}',current_timestamp,current_timestamp) RETURNING id;`)
         if(respuesta.rows.length > 0){
-            res.status(200).json(respuesta.rows[0]);
+            res.status(201).json(respuesta.rows[0]);
         } else {
             res.status(500).json({error:'Error al crear usuario'})
         }
