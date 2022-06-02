@@ -139,32 +139,29 @@ router.get('/:id',checkJwt,PedidoController.getPedidoID,function(err, req, res, 
 *       post:
 *           summary: Crea un nuevo pedido.
 *           tags: [Pedido]
-*           parameters:
-*             - in: body
-*               name: Pedido
-*               description: Pedido a crear.
-*               schema:
-*                   type: object
-*                   required:
-*                       - direccion
-*                       - pedido
-*                   properties:
-*                       direccion:
-*                           type: string
-*                           example: San Andres 800
-*                       pedido:
-*                           type: array
-*                           items:
-*                               type: object
-*                               properties:
-*                                   plato:
-*                                       type: integer
-*                                       example: 2
-*                                   opcionales:
-*                                       type: array
-*                                       items:
-*                                           type: integer
-*                                           example: 1,3
+*           requestBody:
+*               required: true
+*               content:
+*                   application/json:
+*                       schema:
+*                           type: object
+*                           properties:
+*                               direccion:
+*                                 type: string
+*                                 example: San Andres 800
+*                               pedido:
+*                                 type: array
+*                                 items:
+*                                       type: object
+*                                       properties:
+*                                           plato:
+*                                             type: integer
+*                                             example: 3
+*                                           opcionales:
+*                                              type: array
+*                                              items:
+*                                                   type: integer
+*                                                   example: 2
 *           security:
 *               - bearerAuth: [] 
 *           responses:
