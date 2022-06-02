@@ -69,6 +69,7 @@ async function validarNuevoPedido(body){
     
     var selectPlatos = "SELECT ("
     var selectPreciosOpcionales = 'SELECT ('
+    var tieneOpcionales = false
     var pedido = body.pedido
     for(var i=0; i<pedido.length; i++){
         claves = Object.keys(pedido[i])
@@ -83,12 +84,12 @@ async function validarNuevoPedido(body){
         selectPlatos+=`exists (select * from platos where id=${pedido[i].plato}) and `
         for(var j=0; j<pedido[i].opcionales.length; j++){
             selectPreciosOpcionales+=`exists (select * from opcionales where id=${pedido[i].opcionales[j]} and plato_id=${pedido[i].plato}) and `
+            tieneOpcionales = true
             if(isNaN(pedido[i].opcionales[j]))
                 throw [400,"Los opcionales deben ser un entero"]
         }
     }
     selectPlatos = selectPlatos.slice(0,-5) + ') as platosvalidos;'
-    selectPreciosOpcionales = selectPreciosOpcionales.slice(0,-5) + ') as opcionalesvalidos;'
 
     var respuestaPlatos = await pool.query(selectPlatos)
     if(respuestaPlatos.rows.length > 0){
@@ -97,12 +98,17 @@ async function validarNuevoPedido(body){
     } else
         throw [500,"Error al validar platos"]
 
-    var respuestaPlatosOpcionales = await pool.query(selectPreciosOpcionales)
-    if(respuestaPlatosOpcionales.rows.length > 0){
-        if(respuestaPlatosOpcionales.rows[0].opcionalesvalidos==false)
-            throw [400,"Se ha ingresado un opcional invalido"]
-    } else
-        throw [500,"Error al validar opcionales"]
+    if(tieneOpcionales){
+        selectPreciosOpcionales = selectPreciosOpcionales.slice(0,-5) + ') as opcionalesvalidos;'
+        var respuestaPlatosOpcionales = await pool.query(selectPreciosOpcionales)
+        if(respuestaPlatosOpcionales.rows.length > 0){
+            if(respuestaPlatosOpcionales.rows[0].opcionalesvalidos==false)
+                throw [400,"Se ha ingresado un opcional invalido"]
+        } else
+            throw [500,"Error al validar opcionales"]
+    }
+
+    return tieneOpcionales;
 }
 
 function generarInsertOpcionalPedidoPlato(body){
@@ -115,11 +121,11 @@ function generarInsertOpcionalPedidoPlato(body){
                 insertarPedido+=`(${body[i].plato} , ${body[i].opcionales[j]}, IDPEDIDO, ${i}), `
                 
     }
-    insertarPedido = insertarPedido.slice(0,-2) + ';'
+    insertarPedido = insertarPedido.slice(0,-2) + ' RETURNING id;'
     return insertarPedido
 }
 
-function generarSelectPrecioOpcionales(body){ //VERIFICAR QUE LOS OPCIONALES PERTENECEN AL PLATO
+function generarSelectPrecioOpcionales(body){
     var obtenerPreciosOpcionales = 'SELECT precio FROM opcionales WHERE id IN ('
     for(var i=0; i<body.length; i++){
         for(var j=0; j<body[i].opcionales.length; j++)
@@ -149,14 +155,12 @@ async function calcularPrecioOpcionales(obtenerPrecioOpcionales){
     return precioOpcionales
 }
 
-async function calcularPrecio(obtenerPrecio, obtenerPrecioOpcionales){
+async function calcularPrecio(obtenerPrecio){
     var precio = 0
     var respuestaPrecios = await pool.query(obtenerPrecio)
     if(respuestaPrecios.rows.length > 0){
-        for(var i=0; i<respuestaPrecios.rows.length; i++){
+        for(var i=0; i<respuestaPrecios.rows.length; i++)
             precio += respuestaPrecios.rows[i].precio
-        }
-        precio += await calcularPrecioOpcionales(obtenerPrecioOpcionales)
     } else 
         throw [404,"Error al obtener los platos solicitados"]
     return precio
@@ -166,15 +170,19 @@ controller.postPedido = async(req,res) => {
     try {
         var body = req.body
 
-        await validarNuevoPedido(body)
+        const tieneOpcionales = await validarNuevoPedido(body)
 
         const idUsuario = await obtenerIDUsuario(req.auth.payload['https://ilpiatto.com/email'])
 
         var obtenerPrecios = generarSelectPrecio(body.pedido)
-        var obtenerPreciosOpcionales = generarSelectPrecioOpcionales(body.pedido)
-        var insertarOpcionalPedidoPlato = generarInsertOpcionalPedidoPlato(body.pedido)
+        
+        var precio = await calcularPrecio(obtenerPrecios)
 
-        var precio = await calcularPrecio(obtenerPrecios,obtenerPreciosOpcionales)
+        if(tieneOpcionales){
+            var obtenerPreciosOpcionales = generarSelectPrecioOpcionales(body.pedido)
+            var insertarOpcionalPedidoPlato = generarInsertOpcionalPedidoPlato(body.pedido)
+            precio += await calcularPrecioOpcionales(obtenerPreciosOpcionales)
+        }
 
         const resultadoInsertPedido = await pool.query(`INSERT INTO pedidos 
                             (fecha,direccion,precio,cliente_id,created_at,updated_at)
@@ -187,17 +195,16 @@ controller.postPedido = async(req,res) => {
         else
             res.status(409).json({error: "Error al almacenar el nuevo pedido"})
 
-        insertarOpcionalPedidoPlato = insertarOpcionalPedidoPlato.replaceAll('IDPEDIDO',`${idPedido}`)
-        
-        const resultadoInsertOpcionalPedidoPlato = await pool.query(insertarOpcionalPedidoPlato)
-
-        if(resultadoInsertPedido.rows.length > 0)
-            res.status(201).json({id: idPedido})
-        else{
-            await pool.query(`DELETE FROM pedidos WHERE id=${idPedido}`)
-            res.status(409).json({error: "Error al almacenar el nuevo pedido junto con sus platos y opcionales"})
+        if(tieneOpcionales){
+            insertarOpcionalPedidoPlato = insertarOpcionalPedidoPlato.replaceAll('IDPEDIDO',`${idPedido}`)
+            const resultadoInsertOpcionalPedidoPlato = await pool.query(insertarOpcionalPedidoPlato)
+            if(resultadoInsertOpcionalPedidoPlato.rows.length == 0){
+                await pool.query(`DELETE FROM pedidos WHERE id=${idPedido}`)
+                res.status(409).json({error: "Error al almacenar el nuevo pedido junto con sus platos y opcionales"})
+            }
         }
-        
+
+        res.status(201).json({id: idPedido})
     } catch(error) {
         res.status(error[0]).json({error: error[1]})
     }
