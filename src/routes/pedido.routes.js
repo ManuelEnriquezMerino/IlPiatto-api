@@ -13,39 +13,27 @@ const jsonParser = bodyParser.json()
 *     schemas:
 *       Pedido:
 *         type: object
-*         required:
-*           - direccion
-*           - pedido
 *         properties:
 *           id:
-*             type: string
+*             type: int
 *             description: ID auto generado para el pedido.
-*           precio:
-*             type: int
-*             description: precio del pedido, calculado en base a los platos y opcionales.
-*           ciente_id:
-*             type: int
-*             description: ID del cliente que realizo el pedido, provista por el token de autenticacion.
+*             example: 1
+*           fecha:
+*             type: date
+*             description: Fecha y hora cuando se realizo el pedido.
+*             example: 2022-06-02 12:39:47
 *           direccion:
 *             type: string
 *             description: Direccion a la que se debe enviar el pedido.
-*           pedido:
-*               type: object
-*               properties:
-*                   plato:
-*                       type: int
-*                       description: ID del plato.
-*                   opcionales:
-*                       type: array
-*                       items:
-*                           type: int
-*                           description: ID del opcional para el plato.
-*         example:
-*           id: 1   
-*           fecha: 2022-06-02T15:39:47.000Z
-*           direccion: San Andres 800
-*           precio: 5450
-*           cliente_id: 1
+*             example: Urquiza 154
+*           precio:
+*             type: int
+*             description: precio del pedido, calculado en base a los platos y opcionales.
+*             example: 5450
+*           ciente_id:
+*             type: int
+*             description: ID del cliente que realizo el pedido, provista por el token de autenticacion.
+*             example: 1
 */
 
 
@@ -76,7 +64,10 @@ const jsonParser = bodyParser.json()
 *               "404":
 *                   description: El usuario no cuenta con pedidos
 */
-router.get('/',checkJwt,PedidoController.getPedido)
+router.get('/',checkJwt,PedidoController.getPedido,function(err, req, res, next) {
+    if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
+        res.status(400).send({error:"Error de autenticacion"})
+})
 
 /**
 *   @swagger
@@ -131,9 +122,7 @@ router.get('/',checkJwt,PedidoController.getPedido)
 *               "500":
 *                   description: <ul><li>Error al validar platos.</li><li>Error al validar opcionales</li></ul>
 */
-router.post('/',checkJwt,jsonParser,PedidoController.postPedido)
-
-router.use(function(err, req, res, next) {
+router.post('/',checkJwt,jsonParser,PedidoController.postPedido,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
         res.status(400).send({error:"Error de autenticacion"});
     else
