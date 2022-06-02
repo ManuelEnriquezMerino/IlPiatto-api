@@ -9,4 +9,8 @@ const jsonParser = bodyParser.json()
 router.get('/',checkJwt,PedidoController.getPedido)
 router.post('/',checkJwt,jsonParser,PedidoController.postPedido)
 
+router.use(function(err, req, res, next) {
+    res.status(400).send({error:"JSON invalido"});
+})
+
 module.exports = router
