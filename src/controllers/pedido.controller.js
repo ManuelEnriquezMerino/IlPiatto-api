@@ -1,7 +1,7 @@
 const controller = {}
 const { Pool } = require('pg/lib')
 const pool = require('../database')
-const atributos = '*' //Ver que atributos traer
+const atributos = 'id,fecha,direccion,precio,cliente_id' //Ver que atributos traer
 
 async function obtenerIDUsuario(email){
     const queryIDUsuario = await pool.query(`SELECT id FROM clientes WHERE email='${email}';`)
@@ -18,7 +18,7 @@ controller.getPedido = async(req,res) => {
         if(respuesta.rows.length > 0){
             res.status(200).json(respuesta.rows);
         } else {
-            //error res.status(codigo).json({error: 'texto del error'})
+            res.status(500).json({error: 'El usuario no cuenta con pedidos'})
         }
     } catch(error) {
         res.status(error[0]).json({error: error[1]})
@@ -36,9 +36,9 @@ async function validarNuevoPedido(body){
     if(claves[1]!="pedido")
         throw [400,"La segunda clave debe ser pedido"]
     if(typeof body.direccion!='string')
-        throw [400,"Error la direccion debe ser una cadena de caracteres"]
+        throw [400,"La direccion debe ser una cadena de caracteres"]
     if(!Array.isArray(body.pedido))
-        throw [400,"Error el pedido debe ser un arreglo"]
+        throw [400,"El pedido debe ser un arreglo"]
     
     var selectPlatos = "SELECT ("
     var selectPreciosOpcionales = 'SELECT ('
@@ -50,14 +50,14 @@ async function validarNuevoPedido(body){
         if(claves[1]!="opcionales")
             throw [400,"La segunda clave de los pedidos debe ser opcionales"]
         if(isNaN(pedido[i].plato))
-            throw [400,"Error los platos deben ser un entero"]
+            throw [400,"Los platos deben ser un entero"]
         if(!Array.isArray(pedido[i].opcionales))
-            throw [400,"Error los opcionales deben estar dentro de arreglos"]
+            throw [400,"Los opcionales deben estar dentro de arreglos"]
         selectPlatos+=`exists (select * from platos where id=${pedido[i].plato}) and `
         for(var j=0; j<pedido[i].opcionales.length; j++){
             selectPreciosOpcionales+=`exists (select * from opcionales where id=${pedido[i].opcionales[j]} and plato_id=${pedido[i].plato}) and `
             if(isNaN(pedido[i].opcionales[j]))
-                throw [400,"Error los opcionales deben ser un entero"]
+                throw [400,"Los opcionales deben ser un entero"]
         }
     }
     selectPlatos = selectPlatos.slice(0,-5) + ') as platosvalidos;'

@@ -10,8 +10,7 @@ router.get('/',checkJwt,PedidoController.getPedido)
 router.post('/',checkJwt,jsonParser,PedidoController.postPedido)
 
 router.use(function(err, req, res, next) {
-    console.log(err.name)
-    if(err.name=="InvalidTokenError")
+    if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
         res.status(400).send({error:"Error de autenticacion"});
     else
         if(err.name=="SyntaxError")
