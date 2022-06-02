@@ -167,9 +167,10 @@ controller.postPedido = async(req,res) => {
 
         if(resultadoInsertPedido.rows.length > 0)
             res.status(201).json({id: idPedido})
-        else
+        else{
+            await pool.query(`DELETE FROM pedidos WHERE id=${idPedido}`)
             res.status(409).json({error: "Error al almacenar el nuevo pedido junto con sus platos y opcionales"})
-
+        }
         
     } catch(error) {
         res.status(error[0]).json({error: error[1]})
