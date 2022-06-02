@@ -46,7 +46,7 @@ const jsonParser = bodyParser.json()
 
 /**
 *   @swagger
-*   /pedido/:
+*   /pedidos/:
 *       get:
 *           summary: Obtener los pedidos previos del usuario.
 *           tags: [Pedido]
@@ -71,7 +71,7 @@ router.get('/',checkJwt,PedidoController.getPedidos,function(err, req, res, next
 
 /**
 *   @swagger
-*   /pedido/{id}:
+*   /pedidos/{id}:
 *       get:
 *           summary: Obtener los datos de un dado pedidos.
 *           tags: [Pedido]
@@ -135,7 +135,7 @@ router.get('/:id',checkJwt,PedidoController.getPedidoID,function(err, req, res, 
 
 /**
 *   @swagger
-*   /pedido/:
+*   /pedidos/:
 *       post:
 *           summary: Crea un nuevo pedido.
 *           tags: [Pedido]

@@ -103,7 +103,7 @@ const PlatoController = require('../controllers/plato.controller')
 
 /**
 *   @swagger
-*   /plato/:
+*   /platos/:
 *       get:
 *           summary: Obtiene un listado de todos los platos.
 *           tags: [Plato]
@@ -123,7 +123,7 @@ router.get('/',PlatoController.getPlato)
 
 /**
 *   @swagger
-*   /plato/categoria/:
+*   /platos/categorias/:
 *       get:
 *           summary: Obtiene un listado de todas las categorias.
 *           tags: [Plato]
@@ -139,11 +139,11 @@ router.get('/',PlatoController.getPlato)
 *               "500":
 *                   description: Error en el servidor
 */
-router.get('/categoria',PlatoController.getCategorias)
+router.get('/categorias',PlatoController.getCategorias)
 
 /**
 *   @swagger
-*   /plato/restriccion/:
+*   /platos/restricciones/:
 *       get:
 *           summary: Obtiene un listado de todas las restricciones.
 *           tags: [Plato]
@@ -159,11 +159,11 @@ router.get('/categoria',PlatoController.getCategorias)
 *               "500":
 *                   description: Error en el servidor
 */
-router.get('/restriccion',PlatoController.getRestricciones)
+router.get('/restricciones',PlatoController.getRestricciones)
 
 /**
 *   @swagger
-*   /plato/opcional/:
+*   /platos/opcionales/:
 *       get:
 *           summary: Obtiene un listado de todos los opcionales.
 *           tags: [Plato]
@@ -179,11 +179,11 @@ router.get('/restriccion',PlatoController.getRestricciones)
 *               "500":
 *                   description: Error en el servidor
 */
-router.get('/opcional',PlatoController.getOpcionales)
+router.get('/opcionales',PlatoController.getOpcionales)
 
 /**
 *   @swagger
-*   /plato/{id}:
+*   /platos/{id}:
 *       get:
 *           summary: Obtiene los datos de un dado plato.
 *           tags: [Plato]
@@ -212,7 +212,7 @@ router.get('/:id',PlatoController.getPlatoID)
 
 /**
 *   @swagger
-*   /plato/categoria/{id}:
+*   /platos/categorias/{id}:
 *       get:
 *           summary: Obtiene un listado de los platos que pertenecen a una dada categoria.
 *           tags: [Plato]
@@ -237,11 +237,11 @@ router.get('/:id',PlatoController.getPlatoID)
 *               "500":
 *                   description: Error en el servidor
 */
-router.get('/categoria/:idCategoria',PlatoController.getPlatoCategoria)
+router.get('/categorias/:idCategoria',PlatoController.getPlatoCategoria)
 
 /**
 *   @swagger
-*   /plato/restriccion/{id}:
+*   /platos/restricciones/{id}:
 *       get:
 *           summary: Obtiene un listado de los platos que siguen una dada restriccion.
 *           tags: [Plato]
@@ -266,11 +266,11 @@ router.get('/categoria/:idCategoria',PlatoController.getPlatoCategoria)
 *               "500":
 *                   description: Error en el servidor
 */
-router.get('/restriccion/:idRestriccion',PlatoController.getPlatoRestriccion)
+router.get('/restricciones/:idRestriccion',PlatoController.getPlatoRestriccion)
 
 /**
 *   @swagger
-*   /plato/opcional/{id}:
+*   /platos/opcionales/{id}:
 *       get:
 *           summary: Obtiene un listado de los opcionales para un platos.
 *           tags: [Plato]
@@ -295,6 +295,6 @@ router.get('/restriccion/:idRestriccion',PlatoController.getPlatoRestriccion)
 *               "500":
 *                   description: Error en el servidor
 */
-router.get('/opcional/:idPlato',PlatoController.getOpcionalesPlato)
+router.get('/opcionales/:idPlato',PlatoController.getOpcionalesPlato)
 
 module.exports = router

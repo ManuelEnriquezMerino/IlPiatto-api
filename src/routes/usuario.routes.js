@@ -53,7 +53,7 @@ const jsonParser = bodyParser.json()
 
 /**
 *   @swagger
-*   /usuario/:
+*   /usuarios/:
 *       get:
 *           summary: Obtiene los datos del usuario actualmente logueado.
 *           tags: [Usuario]
@@ -80,7 +80,7 @@ router.get('/',checkJwt,UsuarioController.getUsuario,function(err, req, res, nex
 
 /**
 *   @swagger
-*   /usuario/:
+*   /usuarios/:
 *       post:
 *           summary: Crea un nuevo usuario.
 *           tags: [Usuario]
@@ -121,7 +121,7 @@ router.post('/',jsonParser,UsuarioController.postUsuario,function(err, req, res,
 
 /**
 *   @swagger
-*   /usuario/{id}:
+*   /usuarios/{id}:
 *       put:
 *           summary: Modificar informacion de un usuario.
 *           tags: [Usuario]

@@ -17,9 +17,9 @@ app.use(
     swaggerUi.setup(specs, { explorer: true })
 );
 
-app.use('/pedido',routesPedido)
-app.use('/plato',routesPlato)
-app.use('/usuario',routesUsuario)
+app.use('/pedidos',routesPedido)
+app.use('/platos',routesPlato)
+app.use('/usuarios',routesUsuario)
 
 app.listen(3000, ()=>{
     console.log('Servidor a la espera de conexiones')
