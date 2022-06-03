@@ -65,7 +65,13 @@ const jsonParser = bodyParser.json()
 *                   content:
 *                       application/json:
 *                           schema:
-*                               $ref: '#/components/schemas/Usuario'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   usuario:
+*                                       $ref: '#/components/schemas/Usuario'
 *               "400":
 *                   description: Error de autenticacion.
 *               "500":
@@ -103,10 +109,14 @@ router.get('/',checkJwt,UsuarioController.getUsuario,function(err, req, res, nex
 *                   content:
 *                       application/json:
 *                           schema:
-*                              properties:
-*                               id:
-*                                   type: integer
-*                                   example: 1
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 201
+*                                   id:
+*                                       type: int
+*                                       example: 1
 *               "400":
 *                   description: <ul><li>JSON invalido.</li><li>Error en la cantidad de parametros enviados.</li><li>La primer clave debe ser usuario</li><li>La segunda clave debe ser email.</li><li>El usuario debe ser una cadena de caracteres</li><li>El email debe ser una cadena de caracteres.</li><li>Los datos del usuario ingresado ya existen</li></ul>
 *               "500":
@@ -152,6 +162,13 @@ router.post('/',jsonParser,UsuarioController.postUsuario,function(err, req, res,
 *           responses:
 *               "204":
 *                   description: Se modifico exitosamente el usuario.
+*                   content:
+*                       application/json:
+*                           schema:
+*                              properties:
+*                               codigo:
+*                                   type: integer
+*                                   example: 204
 *               "400":
 *                   description: <ul><li>Error en la cantidad de parametros enviados.</li><li>La primer clave debe ser nombre.</li><li>La segunda clave debe ser apellido.</li><li>La tercera clave debe ser nacimiento.</li><li>La cuarta clave debe ser direccion.</li><li>El nombre debe ser nulo o una cadena de caracteres.</li><li>El apellido debe ser nulo o una cadena de caracteres.</li><li>El nacimiento debe ser nulo o una fecha.</li><li>El direccion debe ser nula o una cadena de caracteres.</li></ul>
 *               "500":

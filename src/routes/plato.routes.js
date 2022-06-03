@@ -113,7 +113,13 @@ const PlatoController = require('../controllers/plato.controller')
 *                   content:
 *                       application/json:
 *                           schema:
-*                               $ref: '#/components/schemas/Plato'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   plato:
+*                                       $ref: '#/components/schemas/Plato'
 *               "404":
 *                   description: No hay platos disponibles
 *               "500":
@@ -133,7 +139,15 @@ router.get('/',PlatoController.getPlato)
 *                   content:
 *                       application/json:
 *                           schema:
-*                                 $ref: '#/components/schemas/Categoria'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   categorias:
+*                                       type: array
+*                                       items:
+*                                           $ref: '#/components/schemas/Categoria'
 *               "404":
 *                   description: No hay categorias disponibles
 *               "500":
@@ -153,7 +167,15 @@ router.get('/categorias',PlatoController.getCategorias)
 *                   content:
 *                       application/json:
 *                           schema:
-*                                 $ref: '#/components/schemas/Restriccion'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   restricciones:
+*                                       type: array
+*                                       items:
+*                                           $ref: '#/components/schemas/Restriccion'
 *               "404":
 *                   description: No hay restricciones disponibles
 *               "500":
@@ -173,7 +195,15 @@ router.get('/restricciones',PlatoController.getRestricciones)
 *                   content:
 *                       application/json:
 *                           schema:
-*                               $ref: '#/components/schemas/Opcional'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   opcionales:
+*                                       type: array
+*                                       items:
+*                                           $ref: '#/components/schemas/Opcional'
 *               "404":
 *                   description: No hay opcionales disponibles
 *               "500":
@@ -200,7 +230,13 @@ router.get('/opcionales',PlatoController.getOpcionales)
 *                   content:
 *                       application/json:
 *                           schema:
-*                               $ref: '#/components/schemas/Plato'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   plato:
+*                                       $ref: '#/components/schemas/Plato'
 *               "400":
 *                   description: El plato debe ser ingresado como un entero.
 *               "404":
@@ -229,7 +265,15 @@ router.get('/:id',PlatoController.getPlatoID)
 *                   content:
 *                       application/json:
 *                           schema:
-*                               $ref: '#/components/schemas/Plato'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   platos:
+*                                       type: array
+*                                       items:
+*                                           $ref: '#/components/schemas/Plato'
 *               "400":
 *                   description: La categoria debe ser ingresada como un entero.
 *               "404":
@@ -258,7 +302,15 @@ router.get('/categorias/:idCategoria',PlatoController.getPlatoCategoria)
 *                   content:
 *                       application/json:
 *                           schema:
-*                               $ref: '#/components/schemas/Plato'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   platos:
+*                                       type: array
+*                                       items:
+*                                           $ref: '#/components/schemas/Plato'
 *               "400":
 *                   description: La restriccion debe ser ingresada como un entero.
 *               "404":
@@ -283,11 +335,19 @@ router.get('/restricciones/:idRestriccion',PlatoController.getPlatoRestriccion)
 *                   description: Id del plato
 *           responses:
 *               "200":
-*                   description: Listado de platos que pertenecen a la categoria.
+*                   description: Listado de opcionales para un plato.
 *                   content:
 *                       application/json:
 *                           schema:
-*                               $ref: '#/components/schemas/Plato'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   opcionales:
+*                                       type: array
+*                                       items:
+*                                           $ref: '#/components/schemas/Opcional'
 *               "400":
 *                   description: El plato debe ser ingresado como un entero.
 *               "404":

@@ -58,7 +58,15 @@ const jsonParser = bodyParser.json()
 *                   content:
 *                       application/json:
 *                           schema:
-*                               $ref: '#/components/schemas/Pedido'
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   pedidos:
+*                                       type: array
+*                                       items:
+*                                           $ref: '#/components/schemas/Pedido'
 *               "400":
 *                   description: Error de autenticacion.
 *               "404":
@@ -66,7 +74,7 @@ const jsonParser = bodyParser.json()
 */
 router.get('/',checkJwt,PedidoController.getPedidos,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
-        res.status(400).send({error:"Error de autenticacion"})
+        res.status(400).send({codigo:400,error:"Error de autenticacion"})
 })
 
 /**
@@ -92,33 +100,39 @@ router.get('/',checkJwt,PedidoController.getPedidos,function(err, req, res, next
 *                           schema:
 *                               type: object
 *                               properties:
-*                                 fecha:
-*                                     type: date
-*                                     example: 2022-06-02 18:14:15
-*                                 direccion:
-*                                     type: string
-*                                     example: Urquiza 154
-*                                 precio:
-*                                     type: int
-*                                     example:  5450
-*                                 platos:
-*                                     type: object
-*                                     properties:
-*                                       id:
-*                                           type: int
-*                                           example:  1
-*                                       opcional_id:
-*                                           type: int
-*                                           example:  1
-*                                       pedido_id:
-*                                           type: int
-*                                           example:  1
-*                                       plato_id:
-*                                           type: int
-*                                           example:  1
-*                                       n_orden:
-*                                           type: int
-*                                           example:  1
+*                                   codigo:
+*                                       type: int
+*                                       example: 200
+*                                   pedido:
+*                                       type: object
+*                                       properties:
+*                                               fecha:
+*                                                   type: date
+*                                                   example: 2022-06-02 18:14:15
+*                                               direccion:
+*                                                   type: string
+*                                                   example: Urquiza 154
+*                                               precio:
+*                                                   type: int
+*                                                   example:  5450
+*                                               platos:
+*                                                   type: object
+*                                                   properties:
+*                                                       id:
+*                                                           type: int
+*                                                           example:  1
+*                                                       opcional_id:
+*                                                           type: int
+*                                                           example:  1
+*                                                       pedido_id:
+*                                                           type: int
+*                                                           example:  1
+*                                                       plato_id:
+*                                                           type: int
+*                                                           example:  1
+*                                                       n_orden:
+*                                                           type: int
+*                                                           example:  1
 *               "400":
 *                   description: Error de autenticacion.
 *               "401":
@@ -130,7 +144,7 @@ router.get('/',checkJwt,PedidoController.getPedidos,function(err, req, res, next
 */
 router.get('/:id',checkJwt,PedidoController.getPedidoID,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
-        res.status(400).send({error:"Error de autenticacion"})
+        res.status(400).send({codigo:400,error:"Error de autenticacion"})
 })
 
 /**
@@ -170,10 +184,14 @@ router.get('/:id',checkJwt,PedidoController.getPedidoID,function(err, req, res, 
 *                   content:
 *                       application/json:
 *                           schema:
-*                              properties:
-*                               id:
-*                                   type: integer
-*                                   example: 1
+*                               type: object
+*                               properties:
+*                                   codigo:
+*                                       type: int
+*                                       example: 201
+*                                   id:
+*                                       type: integer
+*                                       example: 1
 *               "400":
 *                   description: <ul><li>Error de autenticacion.</li><li>JSON invalido.</li><li>Error en la cantidad de parametros enviados</li><li>La primer clave debe ser direccion.</li><li>La segunda clave debe ser pedido</li><li>La direccion debe ser una cadena de caracteres.</li><li>El pedido debe ser un arreglo</li><li>La primera clave de los pedidos debe ser plato.</li><li>La segunda clave de los pedidos debe ser opcionales</li><li>Los platos deben ser un entero.</li><li>Los opcionales deben estar dentro de arreglos</li><li>Los opcionales deben ser un entero.</li><li>Se ha ingresado un plato invalido</li><li>Se ha ingresado un opcional invalido</li></ul>
 *               "404":
@@ -185,12 +203,12 @@ router.get('/:id',checkJwt,PedidoController.getPedidoID,function(err, req, res, 
 */
 router.post('/',checkJwt,jsonParser,PedidoController.postPedido,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
-        res.status(400).send({error:"Error de autenticacion"});
+        res.status(400).send({codigo:400,error:"Error de autenticacion"});
     else
         if(err.name=="SyntaxError")
-            res.status(400).send({error:"JSON invalido"});
+            res.status(400).send({codigo:400,error:"JSON invalido"});
         else
-            res.status(500).send({error:"Error al recibir pedido"});
+            res.status(500).send({codigo:400,error:"Error al recibir pedido"});
 })
 
 module.exports = router
