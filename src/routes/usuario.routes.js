@@ -73,16 +73,16 @@ const jsonParser = bodyParser.json()
 */
 router.get('/',checkJwt,UsuarioController.getUsuario,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
-        res.status(400).send({error:"Error de autenticacion"});
+        res.status(400).send({codigo:400,error:"Error de autenticacion"});
     else
-        res.status(500).send({error:"Error al crear usuario"});
+        res.status(500).send({codigo:400,error:"Error al crear usuario"});
 })
 
 /**
 *   @swagger
 *   /usuarios/:
 *       post:
-*           summary: Crea un nuevo usuario.
+*           summary: Crea un nuevo usuario, el correo debe ser el mismo que en Auth0.
 *           tags: [Usuario]
 *           requestBody:
 *               required: true
@@ -114,9 +114,9 @@ router.get('/',checkJwt,UsuarioController.getUsuario,function(err, req, res, nex
 */
 router.post('/',jsonParser,UsuarioController.postUsuario,function(err, req, res, next) {
     if(err.name=="SyntaxError")
-        res.status(400).send({error:"JSON invalido"});
+        res.status(400).send({codigo:400,error:"JSON invalido"});
     else
-        res.status(500).send({error:"Error al crear usuario"});
+        res.status(500).send({codigo:400,error:"Error al crear usuario"});
 })
 
 /**
@@ -159,12 +159,12 @@ router.post('/',jsonParser,UsuarioController.postUsuario,function(err, req, res,
 */
 router.put('/:id',checkJwt,jsonParser,UsuarioController.putUsuario,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
-        res.status(400).send({error:"Error de autenticacion"});
+        res.status(400).send({codigo:400,error:"Error de autenticacion"});
     else
         if(err.name=="SyntaxError")
-            res.status(400).send({error:"JSON invalido"});
+            res.status(400).send({codigo:400,error:"JSON invalido"});
         else
-            res.status(500).send({error:"Error al modificar usuario"});
+            res.status(500).send({codigo:400,error:"Error al modificar usuario"});
 })
 
 module.exports = router

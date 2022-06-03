@@ -7,9 +7,9 @@ controller.getUsuario = async(req,res) => {
     const email = req.auth.payload['https://ilpiatto.com/email']
     const respuesta = await pool.query(`SELECT ${atributos} FROM clientes WHERE email='${email}';`) //Migracion no creada?
     if(respuesta.rows.length > 0){
-        res.status(200).json(respuesta.rows);
+        res.status(200).json({codigo:200,usuario:respuesta.rows});
     } else {
-        res.status(500).json({error:'Error al solicitar datos de usuario'})
+        res.status(500).json({codigo:500,error:'Error al solicitar datos de usuario'})
     }
 }
 
@@ -46,12 +46,12 @@ controller.postUsuario = async(req,res) => {
 
         const respuesta = await pool.query(`INSERT INTO clientes (usuario,email,created_at,updated_at) VALUES ('${body.usuario}','${body.email}',current_timestamp,current_timestamp) RETURNING id;`)
         if(respuesta.rows.length > 0){
-            res.status(201).json(respuesta.rows[0]);
+            res.status(201).json({codigo:201,id:respuesta.rows[0]});
         } else {
-            res.status(500).json({error:'Error al crear usuario'})
+            res.status(500).json({codigo:500,error:'Error al crear usuario'})
         }
     } catch (error){
-        res.status(error[0]).json({error: error[1]})
+        res.status(error[0]).json({codigo:error[0],error: error[1]})
     }
 }
 
@@ -103,10 +103,10 @@ controller.putUsuario = async(req,res) => {
 
         const respuesta = await pool.query(sentenciaUpdate)
         
-        res.status(204).json();
+        res.status(204).json({codigo:204});
     } catch (error){
         console.log(error)
-        res.status(error[0]).json({error: error[1]})
+        res.status(error[0]).json({codigo:error[0],error: error[1]})
     }
 }
 
