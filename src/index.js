@@ -21,6 +21,14 @@ app.use('/pedidos',routesPedido)
 app.use('/platos',routesPlato)
 app.use('/usuarios',routesUsuario)
 
+app.all('*', function(req, res) {
+    throw [400,"Ruta invalida"]
+})
+app.use(function(err, req, res, next) {
+    res.status(err[0]).json({codigo:err[0], mensaje: err[1]});
+})
+
+
 app.listen(process.env.PORT, ()=>{
     console.log('Servidor a la espera de conexiones')
 })
