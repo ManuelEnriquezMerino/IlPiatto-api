@@ -21,6 +21,6 @@ app.use('/pedidos',routesPedido)
 app.use('/platos',routesPlato)
 app.use('/usuarios',routesUsuario)
 
-app.listen(3000, ()=>{
+app.listen(process.env.PORT, ()=>{
     console.log('Servidor a la espera de conexiones')
 })
