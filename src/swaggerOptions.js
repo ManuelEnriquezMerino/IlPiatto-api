@@ -26,7 +26,7 @@ const options = {
       },
       servers: [
         {
-          url: "http://localhost:3000/", //Cambiar esto al pushearlo a heroku!!!
+          url: "http://il-piatto-api.herokuapp.com/",
         },
       ],
     },
