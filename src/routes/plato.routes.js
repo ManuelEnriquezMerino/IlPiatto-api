@@ -118,8 +118,10 @@ const PlatoController = require('../controllers/plato.controller')
 *                                   codigo:
 *                                       type: int
 *                                       example: 200
-*                                   plato:
-*                                       $ref: '#/components/schemas/Plato'
+*                                   platos:
+*                                       type: array
+*                                       items:
+*                                           $ref: '#/components/schemas/Plato'
 *               "404":
 *                   description: No hay platos disponibles
 *               "500":
