@@ -1,7 +1,10 @@
 const express = require('express')
 const app = express()
 const cors = require("cors");
-app.use(cors());
+app.use(cors({
+    origin:"il-piatto-js.herokuapp.com/",
+    credentials: true
+}));
 const session = require('express-session');
 
 //routes
@@ -21,15 +24,16 @@ app.use(
 );
 
 //session
-app.set('trust proxy', 1) // trust first proxy
-app.use(session({
-  secret: 'H4e4aegGA4s2E8',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 1000*60*60,
-            secure: true,
-            sameSite: 'none'}
+app.use(
+    session({
+        secret: 'H4e4aegGA4s2E8',
+        resave: false,
+        saveUninitialized: true,
+        cookie: { maxAge: 1000*60*60,
+                    secure: true,
+                    sameSite: 'none'}
 }))  
+app.set('trust proxy', 1)
 
 app.use('/pedidos',routesPedido)
 app.use('/platos',routesPlato)
