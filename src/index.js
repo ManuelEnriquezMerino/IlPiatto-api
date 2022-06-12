@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require("cors");
 app.use(cors());
-
+const session = require('express-session');
 
 //routes
 const routesPedido = require('./routes/pedido.routes')
@@ -19,6 +19,16 @@ app.use(
     swaggerUi.serve,
     swaggerUi.setup(specs)
 );
+
+//session
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 'H4e4aegGA4s2E8',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true,
+            sameSite: 'none'}
+}))  
 
 app.use('/pedidos',routesPedido)
 app.use('/platos',routesPlato)
