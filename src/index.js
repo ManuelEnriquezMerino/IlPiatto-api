@@ -21,11 +21,7 @@ app.use(
 );
 
 //session
-app.set('trust proxy', 1) // trust first proxy
 app.use(session({
-  secret: 'H4e4aegGA4s2E8',
-  resave: false,
-  saveUninitialized: true,
   cookie: { secure: true,
             sameSite: 'none'}
 }))  
