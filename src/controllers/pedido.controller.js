@@ -16,7 +16,7 @@ controller.getPedidos = async(req,res) => {
         const idUsuario = await obtenerIDUsuario(req.auth.payload['https://ilpiatto.com/email'])
         const respuesta = await pool.query(`SELECT ${atributos} FROM pedidos WHERE cliente_id=${idUsuario};`)
         if(respuesta.rows.length > 0){
-            res.status(200).json({codigo:200,mensaje:respuesta.rows});
+            res.status(200).json({codigo:200,pedidos:respuesta.rows});
         } else {
             res.status(404).json({codigo:404,error: 'El usuario no cuenta con pedidos'})
         }

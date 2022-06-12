@@ -58,6 +58,7 @@ const jsonParser = bodyParser.json()
 *                   content:
 *                       application/json:
 *                           schema:
+*                             pedido:
 *                               type: object
 *                               properties:
 *                                   codigo:

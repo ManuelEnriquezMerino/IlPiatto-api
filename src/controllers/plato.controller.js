@@ -7,7 +7,7 @@ controller.getPlato = async(req,res) => {
     try{
         const respuesta = await pool.query(`SELECT ${atributos} FROM platos;`)
         if(respuesta.rows.length > 0){
-            res.status(200).json({codigo:200,plato:respuesta.rows});
+            res.status(200).json({codigo:200,platos:respuesta.rows});
         } else {
             res.status(404).json({codigo:404,error: 'No hay platos disponibles'})
         }
