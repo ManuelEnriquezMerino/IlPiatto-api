@@ -180,9 +180,10 @@ controller.postPedido = async(req,res) => {
 
         if(tieneOpcionales){
             var obtenerPreciosOpcionales = generarSelectPrecioOpcionales(body.pedido)
-            var insertarOpcionalPedidoPlato = generarInsertOpcionalPedidoPlato(body.pedido)
             precio += await calcularPrecioOpcionales(obtenerPreciosOpcionales)
         }
+
+        var insertarOpcionalPedidoPlato = generarInsertOpcionalPedidoPlato(body.pedido)
 
         const resultadoInsertPedido = await pool.query(`INSERT INTO pedidos 
                             (fecha,direccion,precio,cliente_id,created_at,updated_at)
@@ -195,13 +196,11 @@ controller.postPedido = async(req,res) => {
         else
             res.status(409).json({codigo:409,error: "Error al almacenar el nuevo pedido"})
 
-        if(tieneOpcionales){
-            insertarOpcionalPedidoPlato = insertarOpcionalPedidoPlato.replaceAll('IDPEDIDO',`${idPedido}`)
-            const resultadoInsertOpcionalPedidoPlato = await pool.query(insertarOpcionalPedidoPlato)
-            if(resultadoInsertOpcionalPedidoPlato.rows.length == 0){
-                await pool.query(`DELETE FROM pedidos WHERE id=${idPedido}`)
-                res.status(409).json({codigo:409,error: "Error al almacenar el nuevo pedido junto con sus platos y opcionales"})
-            }
+        insertarOpcionalPedidoPlato = insertarOpcionalPedidoPlato.replaceAll('IDPEDIDO',`${idPedido}`)
+        const resultadoInsertOpcionalPedidoPlato = await pool.query(insertarOpcionalPedidoPlato)
+        if(resultadoInsertOpcionalPedidoPlato.rows.length == 0){
+            await pool.query(`DELETE FROM pedidos WHERE id=${idPedido}`)
+            res.status(409).json({codigo:409,error: "Error al almacenar el nuevo pedido junto con sus platos y opcionales"})
         }
 
         res.status(201).json({codigo:201,id: idPedido})
