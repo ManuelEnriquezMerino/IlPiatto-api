@@ -126,21 +126,21 @@ function generarInsertOpcionalPedidoPlato(body){
 }
 
 function generarSelectPrecioOpcionales(body){
-    var obtenerPreciosOpcionales = 'SELECT precio FROM opcionales WHERE id IN ('
+    var obtenerPreciosOpcionales = ""
     for(var i=0; i<body.length; i++){
         for(var j=0; j<body[i].opcionales.length; j++)
-            obtenerPreciosOpcionales+=body[i].opcionales[j]+','
+            obtenerPreciosOpcionales+=`(SELECT precio FROM opcionales WHERE id=${body[i].opcionales[j]}) UNION ALL`
     }
-    obtenerPreciosOpcionales = obtenerPreciosOpcionales.slice(0,-1) + ')'
+    obtenerPreciosOpcionales = obtenerPreciosOpcionales.slice(0,-10) + ';'
     return obtenerPreciosOpcionales
 }
 
 function generarSelectPrecio(body){
-    var obtenerPrecios = 'SELECT precio FROM platos WHERE id IN ('
+    var obtenerPrecios = ""
     for(var i=0; i<body.length; i++){
-        obtenerPrecios+=body[i].plato+','
+        obtenerPrecios+=`(SELECT precio FROM platos WHERE id=${body[i].plato}) UNION ALL`
     }
-    obtenerPrecios = obtenerPrecios.slice(0,-1) + ')'
+    obtenerPrecios = obtenerPrecios.slice(0,-10) + ';'
     return obtenerPrecios
 }
 
