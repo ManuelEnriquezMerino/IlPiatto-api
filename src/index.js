@@ -28,7 +28,7 @@ app.all('*', function(req, res) {
     throw [400,"Ruta invalida"]
 })
 app.use(function(err, req, res, next) {
-    res.status(err[0]).json({codigo:err[0], mensaje: err[1]});
+    return res.status(err[0]).json({codigo:err[0], mensaje: err[1]});
 })
 
 

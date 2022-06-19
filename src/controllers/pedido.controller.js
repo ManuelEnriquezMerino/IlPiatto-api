@@ -16,12 +16,12 @@ controller.getPedidos = async(req,res) => {
         const idUsuario = await obtenerIDUsuario(req.auth.payload['https://ilpiatto.com/email'])
         const respuesta = await pool.query(`SELECT ${atributos} FROM pedidos WHERE cliente_id=${idUsuario};`)
         if(respuesta.rows.length > 0){
-            res.status(200).json({codigo:200,pedidos:respuesta.rows});
+            return res.status(200).json({codigo:200,pedidos:respuesta.rows});
         } else {
-            res.status(404).json({codigo:404,error: 'El usuario no cuenta con pedidos'})
+            return res.status(404).json({codigo:404,error: 'El usuario no cuenta con pedidos'})
         }
     } catch(error) {
-        res.status(error[0]).json({codigo:error[0],error: error[1]})
+        return res.status(error[0]).json({codigo:error[0],error: error[1]})
     }
 }
 
@@ -30,25 +30,25 @@ controller.getPedidoID = async(req,res) => {
         const idPedido = req.params.id
         const pedido = await pool.query(`SELECT id,fecha,direccion,precio,cliente_id FROM pedidos WHERE id=${idPedido};`)
         if(pedido.rows.length == 0)
-            res.status(404).json({codigo:404,error: 'El pedido no existe'})
+            return res.status(404).json({codigo:404,error: 'El pedido no existe'})
 
         const idUsuario = await obtenerIDUsuario(req.auth.payload['https://ilpiatto.com/email'])
         
         if(pedido.rows[0].cliente_id!=idUsuario)
-            res.status(401).json({codigo:401,error: 'No esta autorizado para ver este pedido'})
+            return res.status(401).json({codigo:401,error: 'No esta autorizado para ver este pedido'})
 
         const informacionPedido = await pool.query(`SELECT id,opcional_id,pedido_id,plato_id,n_orden FROM opcional_pedido_plato WHERE pedido_id=${idPedido};`)
         if(informacionPedido.rows.length > 0)
-            res.status(200).json({codigo:200,
+            return res.status(200).json({codigo:200,
                                     "fecha": pedido.rows[0].fecha,
                                     "direccion": pedido.rows[0].direccion,
                                     "precio": pedido.rows[0].precio,
                                     "platos":informacionPedido.rows
                                 })
         else
-            res.status(500).json({codigo:500,error: 'No se pudo obtener los datos del pedido'})
+            return res.status(500).json({codigo:500,error: 'No se pudo obtener los datos del pedido'})
     } catch(error) {
-        res.status(error[0]).json({codigo:error[0],error: error[1]})
+        return res.status(error[0]).json({codigo:error[0],error: error[1]})
     }
 }
 
@@ -194,18 +194,18 @@ controller.postPedido = async(req,res) => {
         if(resultadoInsertPedido.rows.length > 0)
             var idPedido = resultadoInsertPedido.rows[0].id;
         else
-            res.status(409).json({codigo:409,error: "Error al almacenar el nuevo pedido"})
+        return res.status(409).json({codigo:409,error: "Error al almacenar el nuevo pedido"})
 
         insertarOpcionalPedidoPlato = insertarOpcionalPedidoPlato.replaceAll('IDPEDIDO',`${idPedido}`)
         const resultadoInsertOpcionalPedidoPlato = await pool.query(insertarOpcionalPedidoPlato)
         if(resultadoInsertOpcionalPedidoPlato.rows.length == 0){
             await pool.query(`DELETE FROM pedidos WHERE id=${idPedido}`)
-            res.status(409).json({codigo:409,error: "Error al almacenar el nuevo pedido junto con sus platos y opcionales"})
+            return res.status(409).json({codigo:409,error: "Error al almacenar el nuevo pedido junto con sus platos y opcionales"})
         }
 
-        res.status(201).json({codigo:201,id: idPedido})
+        return res.status(201).json({codigo:201,id: idPedido})
     } catch(error) {
-        res.status(error[0]).json({codigo:error[0],error: error[1]})
+        return res.status(error[0]).json({codigo:error[0],error: error[1]})
     }
 }
 

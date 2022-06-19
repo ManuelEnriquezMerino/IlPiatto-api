@@ -74,7 +74,7 @@ const jsonParser = bodyParser.json()
 */
 router.get('/',checkJwt,PedidoController.getPedidos,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
-        res.status(400).send({codigo:400,error:"Error de autenticacion"})
+        return res.status(400).send({codigo:400,error:"Error de autenticacion"})
 })
 
 /**
@@ -144,7 +144,7 @@ router.get('/',checkJwt,PedidoController.getPedidos,function(err, req, res, next
 */
 router.get('/:id',checkJwt,PedidoController.getPedidoID,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
-        res.status(400).send({codigo:400,error:"Error de autenticacion"})
+        return res.status(400).send({codigo:400,error:"Error de autenticacion"})
 })
 
 /**
@@ -203,12 +203,12 @@ router.get('/:id',checkJwt,PedidoController.getPedidoID,function(err, req, res, 
 */
 router.post('/',checkJwt,jsonParser,PedidoController.postPedido,function(err, req, res, next) {
     if(err.name=="InvalidTokenError" || err.name=="UnauthorizedError")
-        res.status(400).send({codigo:400,error:"Error de autenticacion"});
+        return res.status(400).send({codigo:400,error:"Error de autenticacion"});
     else
         if(err.name=="SyntaxError")
-            res.status(400).send({codigo:400,error:"JSON invalido"});
+            return res.status(400).send({codigo:400,error:"JSON invalido"});
         else
-            res.status(500).send({codigo:400,error:"Error al recibir pedido"});
+            return res.status(500).send({codigo:400,error:"Error al recibir pedido"});
 })
 
 module.exports = router
