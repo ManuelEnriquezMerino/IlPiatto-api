@@ -26,7 +26,7 @@ const options = {
       },
       servers: [
         {
-          url: "http://il-piatto-api.herokuapp.com/",
+          url: process.env.SERVER,
         },
       ],
     },
